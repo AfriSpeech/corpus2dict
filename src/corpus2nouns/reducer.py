@@ -27,6 +27,24 @@ def reduce_phrase_to_pure_noun(phrase: str, doc, stopwords: set) -> str | None:
             return " ".join(kept)
     return None
 
+KNOWN_PROPER_ACRONYMS = {
+    "fda", "hiv", "aids", "un", "who", "nato", "eu", "cdc", "dna", "rna", "mri",
+    "mit", "cia", "fbi", "nasa", "unesco", "cpu", "gpu", "ai", "llm", "nlp", "api",
+    "usa", "uk", "ussr", "gdp", "iso", "ieee", "epa", "nih", "nsf", "esa", "jaxa"
+}
+
+def classify_noun_type(phrase: str, word_type_map: dict[str, str] | None = None) -> str:
+    """Classify a phrase as 'proper' or 'common' based on empirical mid-sentence casing statistics."""
+    if not word_type_map:
+        return "common"
+    words = phrase.strip().lower().split()
+    if not words:
+        return "common"
+    types = [word_type_map.get(w, "common") for w in words]
+    if "proper" in types:
+        return "proper"
+    return "common"
+
 def reduce_to_pure_nouns(phrase_freq_pairs: list[tuple[str, int]], nlp=None, batch_size: int = 2000) -> Counter:
     """Take a list of (phrase, frequency) pairs, strip adjectives/determiners, and deduplicate with summed counts."""
     if nlp is None:

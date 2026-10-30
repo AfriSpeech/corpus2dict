@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "corpus2nouns"
+version = "0.1.0"
+description = "High-throughput engine for extracting and reducing noun phrases from massive corpora."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [
+    { name = "AfriSpeech", email = "michaelseth70@gmail.com" }
+]
+keywords = [
+    "nlp", "noun-phrases", "spacy", "corpus", "lexicon", "token-extraction", "huggingface"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic"
+]
+dependencies = [
+    "spacy>=3.7.0",
+    "pyarrow>=14.0.0",
+    "huggingface-hub>=0.20.0",
+    "pyyaml>=6.0.0",
+    "tqdm>=4.66.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0"
+]
+
+[project.scripts]
+corpus2nouns = "corpus2nouns.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/corpus2nouns"]

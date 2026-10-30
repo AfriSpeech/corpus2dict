@@ -1,14 +1,14 @@
-"""Command-line interface for corpus2nouns."""
+"""Command-line interface for corpus2dict."""
 
 import argparse
 import sys
-from corpus2nouns.pipeline import CorpusNounPipeline
-from corpus2nouns.publisher import publish_dataset
+from corpus2dict.pipeline import CorpusNounPipeline
+from corpus2dict.publisher import publish_dataset
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="corpus2nouns",
-        description="High-throughput engine for extracting and reducing noun phrases from massive corpora."
+        prog="corpus2dict",
+        description="High-throughput engine for extracting, reducing, and translating noun lexicons and gloss-mt dictionaries from massive corpora."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     

@@ -1,4 +1,4 @@
-from corpus2nouns.extractor import extract_from_text
+from corpus2dict.extractor import extract_from_text
 
 def test_extract_noun_phrases():
     text = "The government invested heavily in renewable energy and clean drinking water."

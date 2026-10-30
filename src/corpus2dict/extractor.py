@@ -2,7 +2,7 @@
 
 import re
 import spacy
-from corpus2nouns.cleaner import is_code_token, CODE_KEYWORDS
+from corpus2dict.cleaner import is_code_token, CODE_KEYWORDS
 
 # Common stopwords and articles to strip from boundaries of chunks
 STOPWORDS_BASE = {

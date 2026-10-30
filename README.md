@@ -1,8 +1,8 @@
-# corpus2nouns
+# corpus2dict
 
-> **High-throughput engine for extracting, cleaning, and reducing noun phrases from massive text corpora and instruction fine-tuning datasets.**
+> **High-throughput engine for extracting, cleaning, reducing, and translating noun lexicons and Gloss-MT dictionaries from massive text corpora and instruction fine-tuning datasets.**
 
-`corpus2nouns` is designed to process multi-million row datasets (Parquet, JSONL, Hugging Face Hub datasets) at scale, stripping out code, equations, and structured syntax, extracting linguistically valid noun chunks with spaCy, and optionally reducing them to pure, deduplicated nominal concepts.
+`corpus2dict` is designed to process multi-million row datasets (Parquet, JSONL, Hugging Face Hub datasets) at scale, stripping out code, equations, and structured syntax, extracting linguistically valid noun chunks with spaCy, reducing them to pure nominal concepts, and translating them with LLMs (e.g. Gemini) to produce offline bilingual dictionaries compatible with [**`AfriSpeech/afrigloss-mt`**](https://github.com/AfriSpeech/afrigloss-mt).
 
 ---
 
@@ -15,9 +15,13 @@
   - Removes definite articles (`the`), indefinite articles (`a`, `an`), demonstratives, and pronouns from chunk boundaries (*"the renewable energy"* &rarr; *"renewable energy"*).
 - **Adjective & Determiner Dropping (Pure Noun Reduction)**:
   - Strips modifying adjectives and determiners (*"clean drinking water"* &rarr; *"drinking water"*, *"crucial role"* &rarr; *"role"*), deduplicating variants and summing their frequencies.
+- **Data-Driven Casing Classification (Proper vs Common Nouns)**:
+  - Analyzes empirical orthography outside sentence boundaries to accurately tag common nouns vs proper entities and all-caps acronyms (`FDA`, `HIV`, `NASA`).
+- **Gloss-MT Ready Schema**:
+  - Exports standard columns (`source_phrase`, `target_phrase`, `translated`, `confidence`, `noun_type`, `frequency`) ready for drop-in use with `GlossaryDictionary.load_tsv()`.
 - **High-Throughput Parallel Pipeline**:
-  - Multi-process parallel worker architecture built for multicore servers and cloud instances.
-  - Granular chunk caching (`.json.gz`) enabling instant checkpoint resumption if interrupted.
+  - Multi-process worker architecture and async batch translation designed for cloud GPU/CPU servers.
+  - Granular chunk caching (`.json.gz`, SQLite) enabling instant checkpoint resumption if interrupted.
 - **Hugging Face Hub Integration**:
   - Automatically compiles multi-subset Parquet files with YAML frontmatter dataset cards for multi-config loading via `datasets`.
 
@@ -26,7 +30,7 @@
 ## Installation
 
 ```bash
-pip install corpus2nouns
+pip install corpus2dict
 python -m spacy download en_core_web_sm
 ```
 
@@ -37,7 +41,7 @@ python -m spacy download en_core_web_sm
 ### 1. Python API
 
 ```python
-from corpus2nouns import strip_structured_text, extract_from_text, reduce_to_pure_nouns
+from corpus2dict import strip_structured_text, extract_from_text, reduce_to_pure_nouns
 
 raw_text = """
 We deployed the new artificial intelligence model. 
@@ -61,20 +65,12 @@ print(pure_nouns)
 
 ### 2. Command Line Interface (CLI)
 
-#### Extract from a Dataset Directory
+#### Extract & Reduce from a Dataset Directory
 
 ```bash
-# Extract noun phrases across all subset directories
-corpus2nouns extract /path/to/dataset_dir \
-    --output-dir ./extracted_nouns \
-    --workers 16
-```
-
-#### Extract & Reduce to Pure Nouns Directly
-
-```bash
-corpus2nouns extract /path/to/dataset_dir \
-    --output-dir ./pure_nouns \
+# Extract and reduce to pure nouns with multi-worker parallelism
+corpus2dict extract /path/to/dataset_dir \
+    --output-dir ./extracted_dict \
     --workers 16 \
     --reduce
 ```
@@ -82,8 +78,28 @@ corpus2nouns extract /path/to/dataset_dir \
 #### Publish directly to Hugging Face
 
 ```bash
-corpus2nouns publish ./pure_nouns \
-    --repo-id AfriSpeech/SFT-base-en-nouns
+corpus2dict publish ./extracted_dict \
+    --repo-id AfriSpeech/SFT-base-en-dict
+```
+
+---
+
+## Using Dictionaries with Afri-Gloss-MT
+
+```python
+from afrigloss.dictionary import GlossaryDictionary
+from datasets import load_dataset
+
+# Load from Hugging Face
+ds = load_dataset("AfriSpeech/SFT-base-en-dict", split="train", streaming=True)
+
+# Build offline glossary
+glossary = GlossaryDictionary()
+for row in ds:
+    glossary.add(row["source_phrase"], row["target_phrase"], row["confidence"])
+
+# Query
+print(glossary.lookup("renewable energy"))
 ```
 
 ---

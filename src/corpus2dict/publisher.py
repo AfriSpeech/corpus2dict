@@ -65,7 +65,7 @@ def generate_hf_readme(data_dir: str, repo_id: str) -> str:
         
     body = f"""# {repo_id}
 
-Extracted and deduplicated English nouns and nominal compounds produced by [**`corpus2nouns`**](https://github.com/AfriSpeech/corpus2nouns).
+Extracted and deduplicated bilingual dictionary and nominal lexicon produced by [**`corpus2dict`**](https://github.com/AfriSpeech/corpus2dict).
 
 ---
 

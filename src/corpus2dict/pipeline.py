@@ -11,9 +11,9 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import spacy
 
-from corpus2nouns.cleaner import strip_structured_text, chunk_long_text
-from corpus2nouns.extractor import extract_noun_phrases
-from corpus2nouns.reducer import reduce_to_pure_nouns
+from corpus2dict.cleaner import strip_structured_text, chunk_long_text
+from corpus2dict.extractor import extract_noun_phrases
+from corpus2dict.reducer import reduce_to_pure_nouns
 
 def _parse_worker_chunk(texts: list[str]) -> Counter:
     """Worker function executed inside each process in the ProcessPool."""

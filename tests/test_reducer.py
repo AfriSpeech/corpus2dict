@@ -1,4 +1,4 @@
-from corpus2nouns.reducer import reduce_to_pure_nouns
+from corpus2dict.reducer import reduce_to_pure_nouns
 
 def test_reduce_adjectives():
     pairs = [
@@ -16,7 +16,7 @@ def test_reduce_adjectives():
     assert reduced["space station"] == 70
 
 def test_classify_noun_type():
-    from corpus2nouns.reducer import classify_noun_type
+    from corpus2dict.reducer import classify_noun_type
     mock_type_map = {
         "fda": "proper",
         "hiv": "proper",

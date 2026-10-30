@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "corpus2nouns"
+name = "corpus2dict"
 version = "0.1.0"
-description = "High-throughput engine for extracting and reducing noun phrases from massive corpora."
+description = "High-throughput engine for extracting, reducing, and translating noun lexicons and gloss-mt dictionaries from massive corpora."
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
@@ -13,7 +13,7 @@ authors = [
     { name = "AfriSpeech", email = "michaelseth70@gmail.com" }
 ]
 keywords = [
-    "nlp", "noun-phrases", "spacy", "corpus", "lexicon", "token-extraction", "huggingface"
+    "nlp", "noun-phrases", "spacy", "corpus", "lexicon", "token-extraction", "huggingface", "dictionary", "gloss-mt"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -39,7 +39,7 @@ dev = [
 ]
 
 [project.scripts]
-corpus2nouns = "corpus2nouns.cli:main"
+corpus2dict = "corpus2dict.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/corpus2nouns"]
+packages = ["src/corpus2dict"]

@@ -1,5 +1,5 @@
 import pytest
-from corpus2nouns.cleaner import strip_structured_text, is_code_token, chunk_long_text
+from corpus2dict.cleaner import strip_structured_text, is_code_token, chunk_long_text
 
 def test_strip_code_blocks():
     text = "Here is an explanation:\n```python\ndef foo():\n    return 42\n```\nIt works well."
